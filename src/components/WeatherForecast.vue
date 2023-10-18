@@ -17,7 +17,7 @@
       </v-row>
       <v-col class="d-flex justify-center">
         <p style="padding: 0;">{{ temp }}ºC</p>
-        <img :src="this.icon" style="height: 70px;" >
+        <img :src="this.icon" style="height: 70px;">
       </v-col>
       <p> Temperatura Maxima: {{ tempmax }}ºC</p>
       <p> Temparatura Minima: {{ tempmin }}ºC</p>
@@ -33,6 +33,7 @@ export default {
 
   data() {
     return {
+      data: [],
       temp: null,
       tempmin: null,
       tempmax: null,
@@ -50,12 +51,15 @@ export default {
     getTemperature() {
       axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${this.city}&appid=${key}&units=metric&lang=pt_br`)
         .then(response => {
-          console.log(response.data);
-          this.temp = parseInt(response.data.main.temp)
-          this.tempmax = parseInt(response.data.main.temp_max)
-          this.tempmin = parseInt(response.data.main.temp_min)
-          this.icon = `http://openweathermap.org/img/wn/${response.data.weather[0].icon}.png`
-          console.log(this.icon)
+
+          this.data.push(response.data)
+          this.data.forEach((element) => {
+            this.temp = parseInt(element.main.temp)
+            this.tempmax = parseInt(element.main.temp_max)
+            this.tempmin = parseInt(element.main.temp_min)
+            this.icon = `http://openweathermap.org/img/wn/${element.weather[0].icon}.png`
+          });
+
           this.loading = true
           this.selectCity = this.city
           this.city = null
